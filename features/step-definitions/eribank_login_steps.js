@@ -4,13 +4,7 @@ const Alert = require('../pageobjects/alert');
 const HomePage = require('../pageobjects/home.page');
 const LoginPage = require('../pageobjects/login.page');
 
-
 const assert = require('assert');
-/*const SecurePage = require('../pageobjects/secure.page');
-
-const pages = {
-  login: LoginPage
-}*/
 
 Given(/^the user completes the login data with valid credentials$/, async function () {
   const VALID_USERNAME = 'company';
@@ -49,16 +43,3 @@ Then(/^the user is correctly loged into the app$/, async function () {
   console.log('Then: Checking if login suceeds... End');
 
 });
-
-/*Given(/^I am on the (\w+) page$/, async (page) => {
-    await pages[page].open()
-});
-
-When(/^I login with (\w+) and (.+)$/, async (username, password) => {
-    await LoginPage.login(username, password)
-});
-
-Then(/^I should see a flash message saying (.*)$/, async (message) => {
-    await expect(SecurePage.flashAlert).toBeExisting();
-    await expect(SecurePage.flashAlert).toHaveTextContaining(message);
-});*/
