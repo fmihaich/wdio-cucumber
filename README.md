@@ -63,10 +63,13 @@ For example, to run all the test cases defined in the suit, execute:
 npm run test
 ```
 
+After the suite finishes, an `html` report is generated in `./reports/html/index.html`:
+
+![html_report_example](./readmeImg/html_report_example.png)
+
 The available commands are:
 
 * `test`: To run all the test cases locally
-* `report`: To generate an `html` report based on the content of `allure-results` folder. The results foder is generated each time you run the suite. Note: This report shall be improved.
 
 #### How to run only the test case you are working on
 

@@ -1,17 +1,26 @@
-const LOGOUT_BUTTON_LOCATOR = "xpath://android.widget.Button[@text='Logout']";
+const BALANCE_TEXT_LOCATOR = "xpath://android.view.View[contains(@text, 'Your balance is:')]";
+const BUTTON_LOCATOR = "xpath://android.widget.Button[@text='{btnText}']";
 
 class HomePage {
-  get btnLogout() {
-    return $(LOGOUT_BUTTON_LOCATOR);
+  get balanceText() {
+    return $(BALANCE_TEXT_LOCATOR);
+  }
+
+  getButton(btnText) {
+    return $(BUTTON_LOCATOR.replace('{btnText}', btnText));
   }
 
   async waitUntilIsLoaded() {
-    const myElem = await this.btnLogout;
-    await myElem.waitForDisplayed({ timeout: 40000 })
+    const balanceTextTittle = await this.balanceText;
+    await balanceTextTittle.waitForDisplayed({ timeout: 40000 })
   }
 
-  async isLogoutButtonDisplayed() {
-    return await this.btnLogout.isDisplayed();
+  async isBalanceTextDisplayed() {
+    return await this.balanceText.isDisplayed();
+  }
+
+  async isButtonDisplayed(btnText) {
+    return await this.getButton(btnText).isDisplayed();
   }
 }
 

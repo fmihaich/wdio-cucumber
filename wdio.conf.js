@@ -1,13 +1,18 @@
 const path = require('path');
 const fs = require('fs');
 
+const { generate } = require("multiple-cucumber-html-reporter");
+const cucumberJson = require("wdio-cucumberjs-json-reporter").default;
+
 const WDIO_APPIUM_LOG = path.resolve(process.cwd(), 'wdio-appium.log');
-const ALLURE_RESULTS_DIR = path.resolve(process.cwd(), 'allure-results');
-const ALLURE_REPORT_DIR = path.resolve(process.cwd(), 'allure-report');
+const REPORT_DIR = path.resolve(process.cwd(), "reports");
+const JSON_REPORT_DIR = path.resolve(REPORT_DIR, "json");
+const HTML_REPORT_DIR = path.resolve(REPORT_DIR, "html");
+const HTML_REPORT_TITLE = "WDIO POC - Mobile automation";
 
 const removePathContent = (expectedPath) => {
   if (fs.existsSync(expectedPath)) {
-    fs.rmSync(expectedPath, {recursive: true});
+    fs.rmSync(expectedPath, { recursive: true });
   }
 }
 
@@ -60,10 +65,11 @@ exports.config = {
   framework: 'cucumber',
   reporters: [
     [
-      'allure', {
-        outputDir: ALLURE_RESULTS_DIR,
-        disableWebdriverStepsReporting: true
-      }
+      "cucumberjs-json",
+      {
+        jsonFolder: JSON_REPORT_DIR,
+        language: "en",
+      },
     ]
   ],
   cucumberOpts: {
@@ -85,12 +91,48 @@ exports.config = {
   // =====
   onPrepare: function (config, capabilities) {
     removePathContent(WDIO_APPIUM_LOG);
-    removePathContent(ALLURE_RESULTS_DIR);
-    removePathContent(ALLURE_REPORT_DIR);
+    removePathContent(REPORT_DIR);
+  },
+
+  onComplete: () => {
+    // Generate the report when it all tests are done
+
+    if (fs.existsSync(JSON_REPORT_DIR)) {
+      generate({
+        jsonDir: JSON_REPORT_DIR,
+        reportPath: HTML_REPORT_DIR,
+        pageTitle: HTML_REPORT_TITLE,
+        reportName: HTML_REPORT_TITLE,
+        displayDuration: true,
+        displayReportTime: true,
+      });
+    }
+  },
+
+  // Cucumber Hooks
+  beforeFeature: function (uri, feature) {
+    console.log(`FEATURE: ${feature.name}`);
+  },
+
+  beforeScenario: function (world, context) {
+    console.log(`\nSCENARIO: ${world.pickle.name}`);
+  },
+
+  beforeStep: function (step, scenario, context) {
+    console.log(`STEP: ${step.keyword}${step.text}`);
+  },
+
+  afterStep: function (step, scenario, result, context) {
+    if (result.passed === false) {
+      return driver.takeScreenshot().then(function (screenShot) {
+        cucumberJson.attach(screenShot, "image/png");
+      });
+    }
   },
 
   // Cucumber Hooks
   afterScenario: async function (world, result, context) {
     driver.reset();
+    await driver.pause(2000);
   }
 }
