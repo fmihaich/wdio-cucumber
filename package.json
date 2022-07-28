@@ -6,9 +6,12 @@
     "@wdio/local-runner": "^7.19.7",
     "appium": "^1.22.3",
     "multiple-cucumber-html-reporter": "^1.21.2",
-    "wdio-cucumberjs-json-reporter": "^4.4.1"
+    "qaseio": "^2.0.1",
+    "wdio-cucumberjs-json-reporter": "^4.4.1",
+    "yargs": "^17.5.1"
   },
   "scripts": {
-    "test": "wdio run wdio.conf.js"
+    "test": "wdio run wdio.conf.js",
+    "publish": "node scripts/qaseReporter.js"
   }
 }
